@@ -18,10 +18,10 @@ export class AppComponent {
   mobileInput = '';
   showStep2 = false;
   selectedFriend = 'null';
-  sendTime = 'null';
   url = 'https://8080red.pythonanywhere.com/send-api/';
   // Help Otw
   showHelpOtw = true;
+  sendTime: any = 'null';
 
   // Functions
   // Send SMS to API
@@ -36,10 +36,13 @@ export class AppComponent {
   helpOtw(json) {
     console.log(json.sid);
     console.log(json);
-    setTimeout('window.location.reload()', 8000);
+    //  setTimeout('window.location.reload()', 8000);
     //  window.location.href = '/help-otw';
     this.showHelpOtw = false;
 
+  }
+  reload_page(seconds) {
+    setTimeout('window.location.reload()', seconds);
   }
 
   function($scope) {
