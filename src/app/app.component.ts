@@ -1,19 +1,29 @@
 import { Component } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {map} from 'rxjs/operators';
+//  import google-libphonenumber = require('google-libphonenumber');
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 };
+declare var require: any;
+// Require `PhoneNumberFormat`.
+const PNF = require('google-libphonenumber').PhoneNumberFormat;
+
+// Get an instance of `PhoneNumberUtil`.
+const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
+
+// Parse number with country code and keep raw input.
+// const number = phoneUtil.parseAndKeepRawInput('202-456-1414', 'US');
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
+
 export class AppComponent {
   constructor(private http: HttpClient) {}
-
   isOn = true;
   mobileInput = '';
   showStep2 = false;
@@ -22,10 +32,14 @@ export class AppComponent {
   // Help Otw
   showHelpOtw = true;
   sendTime: any = 'null';
+  private validInput: string;
+  private messageBody: any;
+  phoneNumberValid = 'null';
 
   // Functions
   // Send SMS to API
-  sendSms(smsUrl) {
+  sendSms(smsUrl, phoneInput) {
+    //  validatePhone(phoneInput);
     console.log(smsUrl);
     fetch(smsUrl)
       .then(response => response.json())
@@ -34,13 +48,15 @@ export class AppComponent {
   }
   // Rotate to helpOtw page
   helpOtw(json) {
-    console.log(json.sid);
+    console.log(json.message_id);
+    this.messageBody = json.message_id;
     console.log(json);
     //  setTimeout('window.location.reload()', 8000);
     //  window.location.href = '/help-otw';
     this.showHelpOtw = false;
 
   }
+
   reload_page(seconds) {
     setTimeout('window.location.reload()', seconds);
   }
@@ -48,4 +64,13 @@ export class AppComponent {
   function($scope) {
     $scope.name = 'John Doe';
   }
+
+  validatePhone(mobileInput: string) {
+    const number = phoneUtil.parseAndKeepRawInput(mobileInput, 'US');
+    console.log(phoneUtil.isValidNumber(number));
+    this.phoneNumberValid = phoneUtil.isValidNumber(number);
+  }
 }
+
+
+

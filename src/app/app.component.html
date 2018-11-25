@@ -21,42 +21,9 @@
         <p class="mb-0 small"><i class="fas fa-lightbulb"></i> <b> Hint:</b> {{ selectedFriend }}'s number is <a class="alert-link">+14702609140</a> , you may want to save it in your contacts.</p>
 
       </div>
-      <!-- Enter Phone Number Step 1 -->
-     <div class="form-group">
-      <label class="" for="phoneInput">Enter Mobile Number</label>
-      <div class="input-group mb-2 mr-sm-2">
-        <div class="input-group-prepend">
-          <div class="input-group-text"><i class="fa fa-comments"></i> </div>
-        </div>
-        <!--<label class="lead" for="phoneInput" >{{ mobileInput }}</label>-->
-        <input maxlength="10"  [(ngModel)]="mobileInput" type="tel" class="form-control" id="phoneInput"  placeholder="Ex. 555 123 4567">
-      </div>
-      <small id="emailHelp" class="form-text text-muted">We'll never share your phone number with anyone else.</small>
-      </div>
-      <!-- Select Virtual Friend  Step 2 -->
-      <div  class="form-group" *ngIf="mobileInput.length == 10">
-
-        <label for="selectFriend">Who Should Text You?</label>
-        <div class="input-group mb-2 mr-sm-2">
-          <div class="input-group-prepend">
-            <div class="input-group-text"><i class="fa fa-user-friends"></i> </div>
-          </div>
-          <!--<label class="lead" for="phoneInput" >{{ mobileInput }}</label>-->
-          <select [(ngModel)]="selectedFriend" id="selectFriend" name="selectTime" class="custom-select" >
-            <option value="null" disabled selected> Select A Virtual Friend</option>
-            <option value="Bella" >Bella</option>
-            <option value="Drew">Drew</option>
-            <option value="Taylor">Taylor</option>
-            <option value="null" disabled>Create a Friend (Coming Soon)</option>
-          </select>
-        </div>
-        <small class="form-text text-muted">
-          Select which virtual friend you want the text to be from.
-        </small>
-     </div>
-      <!-- Select Time to Delivery Step 3 -->
-      <div  class="form-group" *ngIf="selectedFriend !== 'null'">
-        <label for="selectTime">When Should {{ selectedFriend }} Text You?</label>
+      <!--  Step 1 -->
+      <div  class="form-group"> <!-- *ngIf="selectedFriend !== 'null' "-->
+        <label for="selectTime">When Do You Need Help?</label>
         <div class="input-group mb-2 mr-sm-2">
           <div class="input-group-prepend">
             <div class="input-group-text"><i class="fa fa-clock"></i> </div>
@@ -71,21 +38,65 @@
             <option value="3600" disabled>Schedule a Specific Time (Coming Soon)</option>
           </select>
         </div>
-        <small  class="form-text text-muted">Standard text messaging rates apply whenever {{ selectedFriend }} sends you a text.</small>
+        <small  class="form-text text-muted">Standard text messaging rates apply whenever your virtual friend sends you a text.</small>
+      </div>
+      <!-- Step 2 -->
+      <div  class="form-group" *ngIf="sendTime !== 'null' ">
+
+        <label for="selectFriend">Who Should Help You?</label>
+        <div class="input-group mb-2 mr-sm-2">
+          <div class="input-group-prepend">
+            <div class="input-group-text"><i class="fa fa-user-friends"></i> </div>
+          </div>
+          <!--<label class="lead" for="phoneInput" >{{ mobileInput }}</label>-->
+          <select [(ngModel)]="selectedFriend" id="selectFriend" name="selectTime" class="custom-select" >
+            <option value="null" disabled selected> Select A Virtual Friend</option>
+            <option value="Bella" >Bella</option>
+            <option value="Drew">Drew</option>
+            <option value="Taylor">Taylor</option>
+            <option value="null" disabled>Create a Friend (Coming Soon)</option>
+          </select>
+        </div>
+        <small class="form-text text-muted">
+          Select which virtual friend you want to receive a text from.
+        </small>
+     </div>
+      <!--  Step 3 -->
+      <div class="form-group" *ngIf="selectedFriend !== 'null'">
+
+        <label class="" for="phoneInput">What Number Should {{ selectedFriend }} Text?</label>
+        <div class="input-group mb-2 mr-sm-2">
+          <div class="input-group-prepend">
+            <div class="input-group-text"><i class="fa fa-comments"></i> </div>
+          </div>
+          <!--<label class="lead" for="phoneInput" >{{ mobileInput }}</label>-->
+          <input (change)="validatePhone(mobileInput)"
+                 maxlength="10"
+                 [(ngModel)]="mobileInput"
+                 type="tel"
+                 id="phoneInput"
+                 placeholder="Ex. 555 123 4567" [ngClass]="{'form-control':true,'is-invalid':!phoneNumberValid}">
+          <div class="invalid-feedback">
+            Please provide a valid mobile number.
+          </div>
+        </div>
+        <small [hidden]="!phoneNumberValid" class="form-text text-muted">We'll never share your phone number with anyone else.</small>
+
       </div>
 
       <!--{{ sendTime + "," + mobileInput.length}}-->
 
 
       <p class="lead">
-        <!--<a [routerLink]="['/help-otw']" class="btn btn-primary" href="#" role="button">Send Help :)</a>
-        <router-outlet></router-outlet>-->
-        <button [hidden]="!showHelpOtw" [disabled]="sendTime == 'null'" class="btn btn-block btn-primary" role="button" (click)="sendSms(url + mobileInput + '?seconds=' + sendTime + '&' + 'friend=' + selectedFriend)">Send Help :)</button>
+        <!--<a [routerLink]="['/firebase']" class="btn btn-primary" href="#" role="button">Send Help :)</a>-->
+        <router-outlet></router-outlet>
+        <button [hidden]="!showHelpOtw" [disabled]="phoneNumberValid !== true" class="btn btn-block btn-primary" role="button" (click)="sendSms(url + mobileInput + '?seconds=' + sendTime + '&' + 'friend=' + selectedFriend,mobileInput)">Send Help :)</button>
         <!--<a [hidden]="mobileInput.length !== 10" (click)="sendSms(url + mobileInput + '?seconds=' + sendTime)" class="btn btn-primary" href="#" role="button">Send Help :)</a>-->
         <!--<a (click)="showStep2= false" class="btn btn-primary" href="#" role="button">Go Back</a>-->
 
     <div class="col-sm-8" style="background-color:lavenderblush;"></div>
   </div>
   </div>
+
 
 
