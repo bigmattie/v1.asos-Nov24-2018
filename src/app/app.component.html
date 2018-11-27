@@ -1,14 +1,14 @@
+<!--<app-send></app-send>-->
 
+<!--  Navbar -->
 <app-navbar></app-navbar>
-  <div class="row">
+
+
 
     <div class="jumbotron text-left">
-      <h1 class="display-3">Awk SOS</h1>
-
 
       <!-- Static Info -->
       <app-howitworks [hidden]="!showHelpOtw"></app-howitworks>
-      <!-- -->
       <!-- Alerts -->
       <div [hidden]="showHelpOtw" class="alert alert-success alert-dismissible fade show" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="reload_page(0)">
@@ -16,17 +16,19 @@
         </button>
         <!-- <a href="#" class="alert-link">Send Feedback</a>.-->
         <h4 class="alert-heading">Help is on the way!</h4>
-        <p class="">Lookout for a text from {{ selectedFriend }} in {{ sendTime/60 }} minutes.</p>
+        <p class="">Lookout for a text from {{ selectedFriend }} {{ friendlySendTime(sendTime) }}.</p>
         <hr class="my-1">
-        <p class="mb-0 small"><i class="fas fa-lightbulb"></i> <b> Hint:</b> {{ selectedFriend }}'s number is <a class="alert-link">+14702609140</a> , you may want to save it in your contacts.</p>
+        <p class="mb-0 small"><i class="fas fa-lightbulb"></i> <b> Hint:</b> {{ selectedFriend }}'s number is <a href="tel:+14702609140" class="alert-link">470-260-9140</a> , you may want to save it in your contacts.</p>
 
       </div>
+
+    <div *ngIf="showSpinner == true">
       <!--  Step 1 -->
       <div  class="form-group"> <!-- *ngIf="selectedFriend !== 'null' "-->
         <label for="selectTime">When Do You Need Help?</label>
         <div class="input-group mb-2 mr-sm-2">
-          <div class="input-group-prepend">
-            <div class="input-group-text"><i class="fa fa-clock"></i> </div>
+          <div class="input-group-prepend ">
+            <div class="input-group-text  bg-white"><i class="fa fa-clock"></i> </div>
           </div>
           <!--<label class="lead" for="phoneInput" >{{ mobileInput }}</label>-->
           <select [(ngModel)]="sendTime" id="selectTime" name="selectTime" class="form-control custom-select " >
@@ -46,7 +48,7 @@
         <label for="selectFriend">Who Should Help You?</label>
         <div class="input-group mb-2 mr-sm-2">
           <div class="input-group-prepend">
-            <div class="input-group-text"><i class="fa fa-user-friends"></i> </div>
+            <div class="input-group-text  bg-white"><i class="fa fa-user-friends"></i> </div>
           </div>
           <!--<label class="lead" for="phoneInput" >{{ mobileInput }}</label>-->
           <select [(ngModel)]="selectedFriend" id="selectFriend" name="selectTime" class="custom-select" >
@@ -67,7 +69,7 @@
         <label class="" for="phoneInput">What Number Should {{ selectedFriend }} Text?</label>
         <div class="input-group mb-2 mr-sm-2">
           <div class="input-group-prepend">
-            <div class="input-group-text"><i class="fa fa-comments"></i> </div>
+            <div class="input-group-text bg-white"><i [ngClass]="{'invalid-feedback':!phoneNumberValid}" class="fa fa-comments"></i> </div>
           </div>
           <!--<label class="lead" for="phoneInput" >{{ mobileInput }}</label>-->
           <input (change)="validatePhone(mobileInput)"
@@ -83,20 +85,39 @@
         <small [hidden]="!phoneNumberValid" class="form-text text-muted">We'll never share your phone number with anyone else.</small>
 
       </div>
+    </div>
 
-      <!--{{ sendTime + "," + mobileInput.length}}-->
-
-
-      <p class="lead">
-        <!--<a [routerLink]="['/firebase']" class="btn btn-primary" href="#" role="button">Send Help :)</a>-->
-        <router-outlet></router-outlet>
-        <button [hidden]="!showHelpOtw" [disabled]="phoneNumberValid !== true" class="btn btn-block btn-primary" role="button" (click)="sendSms(url + mobileInput + '?seconds=' + sendTime + '&' + 'friend=' + selectedFriend,mobileInput)">Send Help :)</button>
-        <!--<a [hidden]="mobileInput.length !== 10" (click)="sendSms(url + mobileInput + '?seconds=' + sendTime)" class="btn btn-primary" href="#" role="button">Send Help :)</a>-->
-        <!--<a (click)="showStep2= false" class="btn btn-primary" href="#" role="button">Go Back</a>-->
-
-    <div class="col-sm-8" style="background-color:lavenderblush;"></div>
+      <!-- Send Help Button -->
+        <button [hidden]="!showHelpOtw || mobileInput.length !== 10"
+                [disabled]="phoneNumberValid == false"
+                class="btn btn-block btn-primary"
+                role="button"
+                (click)="sendSms(url + mobileInput + '?seconds=' + sendTime + '&' + 'friend=' + selectedFriend,mobileInput)">
+          Send Help :)
+        </button>
+      <router-outlet></router-outlet>
+      <!-- need to make router go to'/' and make new component with path '/'-->
   </div>
-  </div>
 
 
 
+
+
+
+<app-footer></app-footer>
+
+<!-- Spinner -->
+<!--<div [hidden]="!showHelpOtw || showSpinner"   style="display: block;left: 40%;" class="loader medium fast"></div>-->
+
+<!--<a [hidden]="mobileInput.length !== 10" (click)="sendSms(url + mobileInput + '?seconds=' + sendTime)" class="btn btn-primary" href="#" role="button">Send Help :)</a>-->
+<!--<a (click)="showStep2= false" class="btn btn-primary" href="#" role="button">Go Back</a>-->
+
+<!-- Progress
+ <div class="progress" *ngIf="sendTime !== 'null' ">
+   <div class="progress-bar progress-bar-striped progress-bar-animated"
+        role="progressbar" style="width: 33%"
+         >33% Complete</div>
+ </div>-->
+<!--{{ sendTime + "," + mobileInput.length}}-->
+
+<!--<a [routerLink]="['/firebase']" class="btn btn-primary" href="#" role="button">Send Help :)</a>-->

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {map} from 'rxjs/operators';
 //  import google-libphonenumber = require('google-libphonenumber');
-
+// https://www.npmjs.com/package/google-libphonenumber
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 };
@@ -34,11 +34,15 @@ export class AppComponent {
   sendTime: any = 'null';
   private validInput: string;
   private messageBody: any;
-  phoneNumberValid = 'null';
+  phoneNumberValid = true;
+  progressPercent = '33%';
+  private timeDivBy60: string;
+  showSpinner = true;
 
   // Functions
   // Send SMS to API
   sendSms(smsUrl, phoneInput) {
+    this.showSpinner = false;
     //  validatePhone(phoneInput);
     console.log(smsUrl);
     fetch(smsUrl)
@@ -66,9 +70,23 @@ export class AppComponent {
   }
 
   validatePhone(mobileInput: string) {
-    const number = phoneUtil.parseAndKeepRawInput(mobileInput, 'US');
-    console.log(phoneUtil.isValidNumber(number));
-    this.phoneNumberValid = phoneUtil.isValidNumber(number);
+    try {
+      const number = phoneUtil.parseAndKeepRawInput(mobileInput, 'US');
+      // console.log(phoneUtil.isValidNumber(number));
+      this.phoneNumberValid = phoneUtil.isValidNumber(number);
+    } catch (err) {
+      // console.log(phoneUtil.isValidNumber(number));
+      this.phoneNumberValid = false;
+    }
+  }
+
+  friendlySendTime(sendTime: any) {
+    if (sendTime === '0') {
+      return 'now';
+    } else {
+      this.timeDivBy60 = (sendTime / 60).toString();
+      return 'in ' + this.timeDivBy60 + ' minutes';
+    }
   }
 }
 
